@@ -12,3 +12,6 @@ Renuka Visvanathan, University of Adelaide, renuka.visvanathan '@' adelaide.edu.
 
 This dataset contains the motion data of 14 healthy older aged between 66 and 86 years old, performed broadly scripted activities using a batteryless, wearable sensor on top of their clothing at sternum level. Data is sparse and noisy due to the use of a passive sensor.
 
+# Setup Environment
+From inside /src run ".\env\Scripts\activate" then "jupyter notebook".
+This will launch  the jupyter notebook in the browser.
