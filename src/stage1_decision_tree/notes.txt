@@ -2,3 +2,16 @@
 2. > env/Scripts/activate
 3. > jupyter notebook
 4. new -> python3 -> rename file (first time only)
+
+<Feb 13; 4pm>
+First attempt at decision tree algortim returns the following results:
+	sit on bed precision: 0.9506024096385542
+	sit on bed recall: 0.9772108000990835
+	sit on chair precision: 0.933372992266508
+	sit on chair recall: 0.8963153384747216
+	lying precision: 0.9996372284251683
+	lying recall: 0.9996372284251683
+	ambulating precision: 0.8790322580645161
+	ambulating recall: 0.7666240409207161
+
+The predictions for ambulating are quite bad.
