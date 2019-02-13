@@ -1,0 +1,4 @@
+1. > python3 -m venv env (first time only, 'env' can be any name)
+2. > env/Scripts/activate
+3. > jupyter notebook
+4. new -> python3 -> rename file (first time only)
