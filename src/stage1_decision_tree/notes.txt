@@ -4,7 +4,7 @@
 4. new -> python3 -> rename file (first time only)
 
 <Feb 13; 4pm>
-First attempt at decision tree algortim returns the following results:
+First attempt at decision tree algortim gave the following results:
 	sit on bed precision: 0.9506024096385542
 	sit on bed recall: 0.9772108000990835
 	sit on chair precision: 0.933372992266508
@@ -15,3 +15,16 @@ First attempt at decision tree algortim returns the following results:
 	ambulating recall: 0.7666240409207161
 
 The predictions for ambulating are quite bad.
+
+<Feb 13; 11pm>
+Including the rssi feature and normalising:
+    sit on bed precision: 0.9470747517846886
+    sit on bed recall: 0.9530179175955743
+    sit on chair precision: 0.8634654324558866
+    sit on chair recall: 0.8526135389888603
+    lying precision: 0.9993148752669971
+    lying recall: 0.999475996614132
+    ambulating precision: 0.8704188481675392
+    ambulating recall: 0.850383631713555
+
+The recall for ambulating improved but many other measures were worse off.
