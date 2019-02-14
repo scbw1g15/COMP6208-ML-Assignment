@@ -28,3 +28,12 @@ Including the rssi feature and normalising:
     ambulating recall: 0.850383631713555
 
 The recall for ambulating improved but many other measures were worse off.
+
+<Feb 14; 9am>
+The graphs generated from the decision trees are really huge.
+A few observations:
+	1) Lying down is extremely easy (shallow tree) to separate out
+	2) A portion of the ambulating results (~70%) is easy to separate out
+	3) Siting on bed and sitting on chair is harder to separate
+	4) One general observation is that the data is not symmetric
+		- there is significantly more "sitting on bed" and "lying down" data points
