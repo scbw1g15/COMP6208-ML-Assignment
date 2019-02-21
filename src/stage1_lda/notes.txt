@@ -1,0 +1,5 @@
+<21 Feb 2019>
+Linear Discriminant Analysis performed using the accelerometer and the RSSI (with ID).
+Classification performance poor.
+More work is required so that the 'close' actions can be distinguished.
+Perhaps the dataset in its current state is not linearly separable.
