@@ -37,3 +37,13 @@ A few observations:
 	3) Siting on bed and sitting on chair is harder to separate
 	4) One general observation is that the data is not symmetric
 		- there is significantly more "sitting on bed" and "lying down" data points
+
+<Feb 17 2019>
+Adding the Antenna ID for the RSSI imporoved the prediction significantly.
+This is because the RSSI is for the specific recevier (identified by the ID)
+
+<Feb 21 2019>
+Tested the decition tree classifier with the test set.
+Evaluation results similar to that obtained from the cross validation step.
+Classification result good enough to be fed into stage 2.
+
