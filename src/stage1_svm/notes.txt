@@ -1,0 +1,2 @@
+The implemented SVM is not complex enough to classify the states.
+More work is required in terms of features and kernels.
