@@ -1,0 +1,4 @@
+<21 February 2019 - Samuel> 
+MLP classifier used with accelerometer data and RSSI (with ID) as features.
+Classification performance poor.
+More work is required so that the neural netwrok can distinguish between the 'close' cases.
