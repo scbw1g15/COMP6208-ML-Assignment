@@ -2,3 +2,48 @@
 2. > env/Scripts/activate
 3. > jupyter notebook
 4. new -> python3 -> rename file (first time only)
+
+<Feb 13; 4pm>
+First attempt at decision tree algortim gave the following results:
+	sit on bed precision: 0.9506024096385542
+	sit on bed recall: 0.9772108000990835
+	sit on chair precision: 0.933372992266508
+	sit on chair recall: 0.8963153384747216
+	lying precision: 0.9996372284251683
+	lying recall: 0.9996372284251683
+	ambulating precision: 0.8790322580645161
+	ambulating recall: 0.7666240409207161
+
+The predictions for ambulating are quite bad.
+
+<Feb 13; 11pm>
+Including the rssi feature and normalising:
+    sit on bed precision: 0.9470747517846886
+    sit on bed recall: 0.9530179175955743
+    sit on chair precision: 0.8634654324558866
+    sit on chair recall: 0.8526135389888603
+    lying precision: 0.9993148752669971
+    lying recall: 0.999475996614132
+    ambulating precision: 0.8704188481675392
+    ambulating recall: 0.850383631713555
+
+The recall for ambulating improved but many other measures were worse off.
+
+<Feb 14; 9am>
+The graphs generated from the decision trees are really huge.
+A few observations:
+	1) Lying down is extremely easy (shallow tree) to separate out
+	2) A portion of the ambulating results (~70%) is easy to separate out
+	3) Siting on bed and sitting on chair is harder to separate
+	4) One general observation is that the data is not symmetric
+		- there is significantly more "sitting on bed" and "lying down" data points
+
+<Feb 17 2019>
+Adding the Antenna ID for the RSSI imporoved the prediction significantly.
+This is because the RSSI is for the specific recevier (identified by the ID)
+
+<Feb 21 2019>
+Tested the decition tree classifier with the test set.
+Evaluation results similar to that obtained from the cross validation step.
+Classification result good enough to be fed into stage 2.
+
