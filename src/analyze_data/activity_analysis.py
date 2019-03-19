@@ -64,17 +64,18 @@ class analysis():
             ts_patient_list.append(ut_patient)
         return ts_patient_list
 
-    def time_series_features_window_steps(self,window,steps):
+    def time_series_features_window_steps(self,window,steps,data):
+        #data defines how many features are going to be time series fixed
         #window defined in seconds and steps that are taken into account 
         ts_patient_list = []
         patient_list = self.patient_list.copy()
         for p in range(len(patient_list)):
             patient= patient_list[p]
             t_patient = [*zip(*patient)]
-            t_patient += [ [0] for k in range(int(window/steps)*3)] #necessary to append to index
+            t_patient += [ [0] for k in range(int(window/steps)*data)] #necessary to append to index
             for t in range(1,len(t_patient[0])):
                 index=1
-                time_table = np.arange(steps,window,steps)
+                time_table = np.arange(steps,window+steps,steps)
                 
                 for i_t_c in range(int(window/steps)):
                     
@@ -82,21 +83,17 @@ class analysis():
                         timestamp_prev = float(t_patient[0][t-index])
                     else:
                         for r in range(i_t_c,int(window/steps)):
-                            t_patient[9+r*3].append(0)
-                            t_patient[9+r*3+1].append(0)
-                            t_patient[9+r*3+2].append(0)
+                            for i in range(data):
+                                t_patient[9+r*data+i].append(0)
                         break
                     t_current = float(t_patient[0][t]) - time_table[i_t_c]
                     if timestamp_prev>=t_current:
-                        t_patient[9+i_t_c*3].append(t_patient[1][index])
-                        t_patient[9+i_t_c*3+1].append(t_patient[2][index])
-                        t_patient[9+i_t_c*3+2].append(t_patient[3][index])
+                        for i in range(data):
+                            t_patient[9+i_t_c*data+i].append(t_patient[1+i][t-index])
                         index+=1
                     else:
-                        t_patient[9+i_t_c*3].append(0)
-                        t_patient[9+i_t_c*3+1].append(0)
-                        t_patient[9+i_t_c*3+2].append(0)
-
+                        for i in range(data):
+                            t_patient[9+i_t_c*data+i].append(0)
             ut_patient = [*zip(*t_patient)]
             ts_patient_list.append(ut_patient)
         return ts_patient_list
@@ -120,10 +117,11 @@ class analysis():
         ax.set_xlabel('Patient ID')
         ax.set_ylabel('Time spent on activity (%)')
         plt.show()
-        print ("done")
+        print ("Done")
 
 an = analysis()
-an.time_series_features_window_steps(1.0,0.1)    
+time_patients = an.time_series_features_window_steps(5.0,0.1,4)
+print("Done") 
 # filtered_data,filtered_activity = an.filter_unbalances(70)      
  
 # for act in filtered_activity:
