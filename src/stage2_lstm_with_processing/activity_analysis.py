@@ -12,8 +12,8 @@ from math import atan2,sqrt
 # ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
 class Tool():
     def __init__(self):
-        S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
-        S2_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S2_Dataset')
+        S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
+        # S2_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S2_Dataset')
         # S1_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),'Datasets_Healthy_Older_People','S1_Dataset')
         # S1_PATH = S1_PATH.replace('\\','/')
         patient_list = []
