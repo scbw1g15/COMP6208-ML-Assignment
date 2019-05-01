@@ -2,6 +2,7 @@ import csv
 import os 
 import matplotlib.pyplot as plt 
 import numpy as np
+import pandas as pd
 from scipy.interpolate import griddata,interp1d
 from scipy.fftpack import fft, rfft
 from scipy.signal import cheby2
@@ -95,11 +96,23 @@ class Tool():
         # for feature in data[1::]: 
         #     interpolated_data.append(interp1d(np.arange(feature)))
         ts_patient_list = []
+        labels_list = []
         patient_list = self.patient_list.copy()
+        headers = ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
+        indexing1 =[headers[g] for g in ts_features]
+        # for i in np.arange(0,window,steps):#creating symmetrical multi index
+        #     for f in ts_features:
+        #         title = headers[f] + " t -"+str(round(i*10)/10)
+        #         indexing1.append(title)
+        
+        
         for p in range(len(patient_list)):
             patient= patient_list[p]
+            
             t_patient = [*zip(*patient)]
             time_stamp = t_patient[0]
+            
+
             interp_data = []
             end = float(time_stamp[-1])
             new_time_stamp = np.arange(0,end,steps)
@@ -119,18 +132,23 @@ class Tool():
 
                     interp_feature = function(new_time_stamp)
                 interp_data.append(interp_feature)
-            
+            patient_labels = interp_data[10]
+            interp_data = [interp_data[r] for r in ts_features]
             #turn to time series data 
             c = 1
             for i in np.arange(steps,window, steps):#repeats for the number of elements in the window
                 padding = [0 for x in range(c)]
                 c+=1
-                for z in range(1,10):
-                    if z in ts_features:
-                        shifted_feature = np.array(list(padding)+list(interp_data[z]))
-                        interp_data.append(shifted_feature[0:len(new_time_stamp)])
-            ts_patient_list.append([*zip(*interp_data)])             
-        return ts_patient_list
+                for z in range(len(ts_features)):
+                    shifted_feature = np.array(list(padding)+list(interp_data[z]))
+                    interp_data.append(shifted_feature[0:len(new_time_stamp)])
+            ts_patient = [*zip(*interp_data)]
+            indexing2 = np.array(np.arange(0,window,steps))
+            indexes = pd.MultiIndex.from_product([indexing2,indexing1])
+            pd_p = pd.DataFrame(ts_patient,columns=indexes)
+            ts_patient_list.append(pd_p)   
+            labels_list.append(patient_labels)                
+        return ts_patient_list, labels_list
 
     def lowpass(self,data, order, cutoff):
         xn = data
@@ -219,9 +237,9 @@ class Tool():
 
 
 
-# an = analysis()
-# an.interpolate_timeseries(5,0.1)
-# time_patients = an.time_series_features_window2(5.0,0.1,4,True)
+an = Tool()
+an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,5])
+# # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
 # print("Done") 
 # filtered_data,filtered_activity = an.filter_unbalances(70)      
  
