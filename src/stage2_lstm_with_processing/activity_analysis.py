@@ -12,8 +12,8 @@ from math import atan2,sqrt
 # ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
 class Tool():
     def __init__(self):
-        # S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
-        S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
+        S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
+        # S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
         # S2_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S2_Dataset')
         # S1_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),'Datasets_Healthy_Older_People','S1_Dataset')
         # S1_PATH = S1_PATH.replace('\\','/')
@@ -247,7 +247,7 @@ class Tool():
                 for idx, ind in enumerate(index):
                     ax.scatter(pat_id,ind,c = colours[idx],marker=markers[idx])
             pat_id += 1
-        ax.legend()
+        ax.legend(loc = 1)
         ax.set_xlabel('Patient ID')
         ax.set_ylabel('Time spent on activity (%)')
         plt.show()
@@ -256,12 +256,13 @@ class Tool():
 
 
 
-an = Tool()
-an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9])
-# # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
-print("Done") 
-# filtered_data,filtered_activity = an.filter_unbalances(70)      
- 
+# an = Tool()
+# an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9])
+# # # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
+
+# filtered_data,filtered_activity = an.filter_unbalances(60) 
+   
+# print("Done") 
 # for act in filtered_activity:
 #     for ind in act:
 #         if ind>0.7:
