@@ -160,30 +160,34 @@ class Tool():
 
             ts_patient = [*zip(*interp_data)]
             #Clean the interpolated labels
-            function1 = interp1d(time_stamp,t_patient[1], kind = 'linear')
-            # function2 = interp1d(time_stamp,t_patient[1], kind = 'quadratic')
-            interp_types = ['Non','Linear-With Filter','Linear-W/out Filter','Quadratic']
-            f, axarr = plt.subplots(3, sharex=True, sharey=False)
-            f.suptitle('Euler Coordinates Transform')
-            patient_labels_clean = t_patient[11]
-            axarr[0].scatter(time_stamp, t_patient[1],marker = '.',color = 'r', label ="Frontal" )
-            axarr[0].scatter(time_stamp, t_patient[2],marker = '.',color = 'g', label ="Vertical" )
-            axarr[0].scatter(time_stamp, t_patient[3],marker = '.',color = 'b', label = "Lateral")
-            axarr[1].plot(new_time_stamp, interp_data[5],marker = '',color = 'r', label ="Roll")
-            axarr[1].plot(new_time_stamp, interp_data[6],marker = '',color = 'g', label ="Pitch")
-            # axarr[1].plot(new_time_stamp, interp_data[7],marker = '',color = 'b', label ="Yaw")
-            axarr[2].scatter(time_stamp, patient_labels_clean, label = "Labels")
-            # axarr[2].plot(new_time_stamp, function1(new_time_stamp),marker = '',color = 'g', label =interp_types[2])
-            # axarr[3].scatter(new_time_stamp, function2(new_time_stamp),marker = '.',color = 'y', label =interp_types[3])
-            for i,ax in enumerate(axarr):
-                ax.set(xlabel='Time (s)', ylabel='Acceleration (g)')
-                ax.legend()
-            
-            plt.show()
 
+            # plotting################################################################################################
+            # function1 = interp1d(time_stamp,t_patient[1], kind = 'linear')
+            # # function2 = interp1d(time_stamp,t_patient[1], kind = 'quadratic')
+            # interp_types = ['Non','Linear-With Filter','Linear-W/out Filter','Quadratic']
+            # f, axarr = plt.subplots(3, sharex=True, sharey=False)
+            # f.suptitle('Euler Coordinates Transform')
+            # patient_labels_clean = t_patient[11]
+            # axarr[0].scatter(time_stamp, t_patient[1],marker = '.',color = 'r', label ="Frontal" )
+            # axarr[0].scatter(time_stamp, t_patient[2],marker = '.',color = 'g', label ="Vertical" )
+            # axarr[0].scatter(time_stamp, t_patient[3],marker = '.',color = 'b', label = "Lateral")
+            # axarr[1].plot(new_time_stamp, interp_data[5],marker = '',color = 'r', label ="Roll")
+            # axarr[1].plot(new_time_stamp, interp_data[6],marker = '',color = 'g', label ="Pitch")
+            # # axarr[1].plot(new_time_stamp, interp_data[7],marker = '',color = 'b', label ="Yaw")
+            # axarr[2].scatter(time_stamp, patient_labels_clean, label = "Labels")
+            # # axarr[2].plot(new_time_stamp, function1(new_time_stamp),marker = '',color = 'g', label =interp_types[2])
+            # # axarr[3].scatter(new_time_stamp, function2(new_time_stamp),marker = '.',color = 'y', label =interp_types[3])
+            # for i,ax in enumerate(axarr):
+            #     ax.set(xlabel='Time (s)', ylabel='Acceleration (g)')
+            #     ax.legend()
+            
+            # plt.show()
+            #########################################################################################################################################
+
+            
             ts_patient_cleaned = [ts_patient[x] for x in range(len(patient_labels)) if patient_labels[x]>0]#clean the interpolated label features
             patient_labels_clean = [x for x in patient_labels if x>0]
-
+            patient_labels_clean = t_patient[11]
             indexing2 = np.array(np.arange(0,window,steps))
             indexes = pd.MultiIndex.from_product([indexing2,indexing1])
             pd_p = pd.DataFrame(ts_patient_cleaned,columns=indexes)
