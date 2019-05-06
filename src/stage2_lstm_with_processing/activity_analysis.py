@@ -12,8 +12,8 @@ from math import atan2,sqrt
 # ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
 class Tool():
     def __init__(self):
-        S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
-        # S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
+        # S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
+        S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
         # S2_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S2_Dataset')
         # S1_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),'Datasets_Healthy_Older_People','S1_Dataset')
         # S1_PATH = S1_PATH.replace('\\','/')
@@ -28,9 +28,10 @@ class Tool():
                         d = [float(x) for x in d]
                         data.append(d)
                     data = [*zip(*data)]
-                    roll, pitch = self.get_pitch_roll(data[1],data[2],data[3])
+                    roll, pitch, yaw = self.get_pitch_roll(data[1],data[2],data[3])
                     data.insert(-1,roll)
                     data.insert(-1,pitch)
+                    data.insert(-1,yaw)
                     data = [*zip(*data)]
                 patient_list.append(data)
         patient_index = []
@@ -46,13 +47,14 @@ class Tool():
         self.patient_list = patient_list
         self.interpolated_data = []
 
-    def get_pitch_roll(self,x_list ,y_list ,z_list):
-        roll, pitch = [], []
+    def get_pitch_roll(self,x_list ,z_list, y_list):
+        roll, pitch, yaw = [], [], []
         for i in range(len(x_list)):
             x,y,z = float(x_list[i]),float(y_list[i]),float(z_list[i])
-            roll.append(atan2(y,z) * 57.3)
-            pitch.append(atan2((- x ) , sqrt(y * y  + z * z )) * 57.3)
-        return roll,pitch
+            roll.append(atan2((y),sqrt(z * z + x * x ))*57.3)
+            yaw.append(atan2((z),sqrt(y * y  + x * x ))*57.3)
+            pitch.append(atan2((x) , sqrt(y * y  + z * z ))*57.3)
+        return roll,pitch,yaw
 
     def filter_unbalances(self, percentage):
         percentage_cutoff = percentage/100
@@ -102,7 +104,7 @@ class Tool():
 
 
 
-    def interpolate_timeseries(self,window, steps, kind='linear', filtering = False, filter_features = [], ts_features = [1,2,3,4,5,6,7,8,9]):
+    def interpolate_timeseries(self,window, steps, kind='linear', filtering = False, filter_features = [], ts_features = [1,2,3,4,5,6,7,8,9,10]):
         #‘linear’, ‘nearest’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’, 
         # ‘previous’, ‘next’, where ‘zero’, ‘slinear’, ‘quadratic’ and ‘cubic’ for type
         # window in seconds, steps also in seconds, window is how far back we look at for the time series management 
@@ -112,7 +114,7 @@ class Tool():
         ts_patient_list = []
         labels_list = []
         patient_list = self.patient_list.copy()
-        headers = ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
+        headers = ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','Yaw','activity']
         indexing1 =[headers[g] for g in ts_features]
         # for i in np.arange(0,window,steps):#creating symmetrical multi index
         #     for f in ts_features:
@@ -129,23 +131,23 @@ class Tool():
             interp_data.append(new_time_stamp)
             for a in range(1,len(t_patient)):
                 feature = t_patient[a]
-                if a==10:
+                if a==11:
                     # function = interp1d(time_stamp,feature,kind = 'zero')
-                    interp_feature = self.pad_label(new_time_stamp,time_stamp,feature)# padding
+                    # interp_feature = self.pad_label(new_time_stamp,time_stamp,feature)# padding
+                    pass
                 elif a==4:
                     function = interp1d(time_stamp,feature,kind = 'previous') # uncomment for continuous data interp
                     interp_feature = function(new_time_stamp)
                 else:
                     function = interp1d(time_stamp,feature, kind = kind)
+                    interp_feature = function(new_time_stamp)
                     # Filtering function
                     if filtering == True:
                         if a in filter_features:
-                            filt_interp_feature = self.lowpass(interp_feature ,3 ,10) 
-                            interp_feature = filt_interp_feature
-
-                    interp_feature = function(new_time_stamp)
+                            filt_interp_feature = self.lowpass(interp_feature,3 ,10) 
+                            interp_feature = filt_interp_feature  
                 interp_data.append(interp_feature)
-            patient_labels = interp_data[10]
+            patient_labels = interp_data[11]
             interp_data = [interp_data[r] for r in ts_features]
             #turn to time series data 
             c = 1
@@ -158,6 +160,27 @@ class Tool():
 
             ts_patient = [*zip(*interp_data)]
             #Clean the interpolated labels
+            function1 = interp1d(time_stamp,t_patient[1], kind = 'linear')
+            # function2 = interp1d(time_stamp,t_patient[1], kind = 'quadratic')
+            interp_types = ['Non','Linear-With Filter','Linear-W/out Filter','Quadratic']
+            f, axarr = plt.subplots(3, sharex=True, sharey=False)
+            f.suptitle('Euler Coordinates Transform')
+            patient_labels_clean = t_patient[11]
+            axarr[0].scatter(time_stamp, t_patient[1],marker = '.',color = 'r', label ="Frontal" )
+            axarr[0].scatter(time_stamp, t_patient[2],marker = '.',color = 'g', label ="Vertical" )
+            axarr[0].scatter(time_stamp, t_patient[3],marker = '.',color = 'b', label = "Lateral")
+            axarr[1].plot(new_time_stamp, interp_data[5],marker = '',color = 'r', label ="Roll")
+            axarr[1].plot(new_time_stamp, interp_data[6],marker = '',color = 'g', label ="Pitch")
+            # axarr[1].plot(new_time_stamp, interp_data[7],marker = '',color = 'b', label ="Yaw")
+            axarr[2].scatter(time_stamp, patient_labels_clean, label = "Labels")
+            # axarr[2].plot(new_time_stamp, function1(new_time_stamp),marker = '',color = 'g', label =interp_types[2])
+            # axarr[3].scatter(new_time_stamp, function2(new_time_stamp),marker = '.',color = 'y', label =interp_types[3])
+            for i,ax in enumerate(axarr):
+                ax.set(xlabel='Time (s)', ylabel='Acceleration (g)')
+                ax.legend()
+            
+            plt.show()
+
             ts_patient_cleaned = [ts_patient[x] for x in range(len(patient_labels)) if patient_labels[x]>0]#clean the interpolated label features
             patient_labels_clean = [x for x in patient_labels if x>0]
 
@@ -256,13 +279,13 @@ class Tool():
 
 
 
-# an = Tool()
-# an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9])
+an = Tool()
+time_patients, labels = an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9,10],filtering = True,filter_features=[1], kind='linear')
 # # # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
 
 # filtered_data,filtered_activity = an.filter_unbalances(60) 
    
-# print("Done") 
+print("Done") 
 # for act in filtered_activity:
 #     for ind in act:
 #         if ind>0.7:
