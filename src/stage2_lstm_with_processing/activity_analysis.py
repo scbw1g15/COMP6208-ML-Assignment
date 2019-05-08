@@ -12,8 +12,8 @@ from math import atan2,sqrt
 # ['time','frontal','vertical','lateral','id','rssi','phase','frequency','roll','pitch','activity']
 class Tool():
     def __init__(self):
-        # S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
-        S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
+        S1_PATH = os.path.join('COMP6208-ML-Assignment','Datasets_Healthy_Older_People','S1_Dataset')
+        # S1_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S1_Dataset')
         # S2_PATH = os.path.join('..','..','Datasets_Healthy_Older_People','S2_Dataset')
         # S1_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),'Datasets_Healthy_Older_People','S1_Dataset')
         # S1_PATH = S1_PATH.replace('\\','/')
@@ -51,9 +51,12 @@ class Tool():
         roll, pitch, yaw = [], [], []
         for i in range(len(x_list)):
             x,y,z = float(x_list[i]),float(y_list[i]),float(z_list[i])
-            roll.append(atan2((y),sqrt(z * z + x * x ))*57.3)
-            yaw.append(atan2((z),sqrt(y * y  + x * x ))*57.3)
-            pitch.append(atan2((x) , sqrt(y * y  + z * z ))*57.3)
+            # roll.append(atan2((y),sqrt(z * z + x * x ))*57.3)
+            # yaw.append(atan2((z),sqrt(y * y  + x * x ))*57.3)
+            # pitch.append(atan2((x) , sqrt(y * y  + z * z ))*57.3)
+            roll.append(atan2((x) , sqrt(y * y  + z * z )))
+            pitch.append(atan2(y,z))
+            yaw.append(atan2(y,x))
         return roll,pitch,yaw
 
     def filter_unbalances(self, percentage):
@@ -133,8 +136,7 @@ class Tool():
                 feature = t_patient[a]
                 if a==11:
                     # function = interp1d(time_stamp,feature,kind = 'zero')
-                    # interp_feature = self.pad_label(new_time_stamp,time_stamp,feature)# padding
-                    pass
+                    interp_feature = self.pad_label(new_time_stamp,time_stamp,feature)# padding
                 elif a==4:
                     function = interp1d(time_stamp,feature,kind = 'previous') # uncomment for continuous data interp
                     interp_feature = function(new_time_stamp)
@@ -157,10 +159,9 @@ class Tool():
                 for z in range(len(ts_features)):
                     shifted_feature = np.array(list(padding)+list(interp_data[z]))
                     interp_data.append(shifted_feature[0:len(new_time_stamp)])
-
             ts_patient = [*zip(*interp_data)]
             #Clean the interpolated labels
-
+            patient_labels_clean = [x for x in patient_labels if x>0]
             # plotting################################################################################################
             # function1 = interp1d(time_stamp,t_patient[1], kind = 'linear')
             # # function2 = interp1d(time_stamp,t_patient[1], kind = 'quadratic')
@@ -184,10 +185,10 @@ class Tool():
             # plt.show()
             #########################################################################################################################################
 
-            
+
             ts_patient_cleaned = [ts_patient[x] for x in range(len(patient_labels)) if patient_labels[x]>0]#clean the interpolated label features
-            patient_labels_clean = [x for x in patient_labels if x>0]
-            patient_labels_clean = t_patient[11]
+
+            # patient_labels_clean = t_patient[11]
             indexing2 = np.array(np.arange(0,window,steps))
             indexes = pd.MultiIndex.from_product([indexing2,indexing1])
             pd_p = pd.DataFrame(ts_patient_cleaned,columns=indexes)
@@ -283,13 +284,23 @@ class Tool():
 
 
 
-an = Tool()
-time_patients, labels = an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9,10],filtering = True,filter_features=[1], kind='linear')
-# # # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
+# an = Tool()
+# time_series_patients, patients_labels = an.interpolate_timeseries(10,0.1,ts_features=[1,2,3,4,5,8,9,], kind='linear')
+# # # # # time_patients = an.time_series_features_window2(5.0,0.1,4,True)
+# sum = 0
+# for i in patients_labels:
+#     sum = sum+len(i)
+# print(sum)
 
-# filtered_data,filtered_activity = an.filter_unbalances(60) 
+# sum=0
+
+
+# for i in time_series_patients:
+#     sum = sum+len(i)
+# print(sum)
+# # filtered_data,filtered_activity = an.filter_unbalances(60) 
    
-print("Done") 
+# print("Done") 
 # for act in filtered_activity:
 #     for ind in act:
 #         if ind>0.7:
